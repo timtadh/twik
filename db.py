@@ -24,17 +24,6 @@ Usage:
 import MySQLdb
 from MySQLdb.cursors import DictCursor
 
-def _results_gen(cur):
-    r = cur.fetchall()
-    if r: yield r
-    else: return
-    n = cur.nextset()
-    while n: 
-        r = cur.fetchall()
-        if r: yield r
-        else: return
-        n = cur.nextset()
-
 class Connections(object):
     
     def __init__(self):
@@ -77,30 +66,40 @@ class Connections(object):
     def release_con(self, con):
         if con in self.in_use: self.in_use.remove(con)
         self.free.add(con)
-        
-    def callproc(self, name, *args):
-        connection = self.get_con()
-        cursor = DictCursor(connection)
-        cursor.callproc(name, args)
-        results = tuple(_results_gen(cursor))
-        cursor.close()
-        self.release_con(connection)
-        
-        if not results: return None
-        elif len(results) == 1: return results[0]
-        else: return results
-    
-    def execute(self, query, *args):
-        connection = self.get_con()
-        cursor = DictCursor(connection)
-        cursor.execute(query, args)
-        results = tuple(_results_gen(cursor))
-        cursor.close()
-        self.release_con(connection)
-        
-        if not results: return None
-        elif len(results) == 1: return results[0]
-        else: return results
-        
 
 connections = Connections()
+
+def _results_gen(cur):
+    r = cur.fetchall()
+    if r: yield r
+    else: return
+    n = cur.nextset()
+    while n: 
+        r = cur.fetchall()
+        if r: yield r
+        else: return
+        n = cur.nextset()
+
+def callproc(name, *args):
+    connection = connections.get_con()
+    cursor = DictCursor(connection)
+    cursor.callproc(name, args)
+    results = tuple(_results_gen(cursor))
+    cursor.close()
+    connections.release_con(connection)
+    
+    if not results: return None
+    elif len(results) == 1: return results[0]
+    else: return results
+
+def execute(query, *args):
+    connection = connections.get_con()
+    cursor = DictCursor(connection)
+    cursor.execute(query, args)
+    results = tuple(_results_gen(cursor))
+    cursor.close()
+    connections.release_con(connection)
+    
+    if not results: return None
+    elif len(results) == 1: return results[0]
+    else: return results

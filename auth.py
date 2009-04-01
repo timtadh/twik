@@ -4,6 +4,8 @@
 Authentication methods for Twik. Based on crypt_framework <http://github.com/timtadh/crypt_framework>.
 '''
 
+from Crypto.Hash import SHA256
+
 def normalize(text):
     s = ''
     for c in text:

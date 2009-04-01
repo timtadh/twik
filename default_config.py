@@ -11,7 +11,8 @@ f = open('db.conf', 'r')
 s = f.read()
 f.close
 
-d = dict([[y.lstrip().rstrip() for y in x.split(':')] for x in s.split('\n') if x and x.lstrip()[0] != '#' and len(x.split(':')) == 2])
+d = dict([[y.lstrip().rstrip() for y in x.split(':')] for x in s.split('\n')
+                                        if x and x.lstrip()[0] != '#' and len(x.split(':')) == 2])
 keys = d.keys()
 keys.sort()
 

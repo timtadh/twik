@@ -70,14 +70,10 @@ class Connections(object):
 connections = Connections()
 
 def _results_gen(cur):
-    r = cur.fetchall()
-    if r: yield r
-    else: return
+    yield cur.fetchall()
     n = cur.nextset()
     while n: 
-        r = cur.fetchall()
-        if r: yield r
-        else: return
+        yield cur.fetchall()
         n = cur.nextset()
 
 def callproc(name, *args):
@@ -87,6 +83,9 @@ def callproc(name, *args):
     results = tuple(_results_gen(cursor))
     cursor.close()
     connections.release_con(connection)
+    
+    results = results[:-1]
+    print len(results)
     
     if not results: return None
     elif len(results) == 1: return results[0]
@@ -99,6 +98,9 @@ def execute(query, *args):
     results = tuple(_results_gen(cursor))
     cursor.close()
     connections.release_con(connection)
+    
+    results = results[:-1]
+    print len(results)
     
     if not results: return None
     elif len(results) == 1: return results[0]

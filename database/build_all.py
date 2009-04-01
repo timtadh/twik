@@ -12,7 +12,7 @@ BUILD_DIR = 'build'
 CREATE_DIR = 'create'
 TABLE_CREATE_FILE = 'create_tables.sql'
 
-DATABASE = 'diplomacy'
+DATABASE = 'masran'
 
 src_files = os.listdir(SRC_DIR)
 

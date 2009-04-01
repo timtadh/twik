@@ -88,8 +88,7 @@ def callproc(name, *args):
     cursor.close()
     connections.release_con(connection)
     
-    if not results: return None
-    elif len(results) == 1: return results[0]
+    if len(results) == 1: return results[0]
     else: return results
 
 def execute(query, *args):
@@ -100,6 +99,5 @@ def execute(query, *args):
     cursor.close()
     connections.release_con(connection)
     
-    if not results: return None
-    elif len(results) == 1: return results[0]
+    if len(results) == 1: return results[0]
     else: return results

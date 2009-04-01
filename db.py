@@ -73,8 +73,10 @@ def _results_gen(cur):
     yield cur.fetchall()
     n = cur.nextset()
     while n: 
-        yield cur.fetchall()
+        r = cur.fetchall()
         n = cur.nextset()
+        if not n and not r: return
+        yield r
 
 def callproc(name, *args):
     connection = connections.get_con()

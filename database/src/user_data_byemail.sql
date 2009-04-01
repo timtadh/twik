@@ -1,6 +1,6 @@
 DELIMITER $$
 
-USE masran
+USE <%DATABASE%>
 
 DROP PROCEDURE IF EXISTS user_data_byemail $$
 

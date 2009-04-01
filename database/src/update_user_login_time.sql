@@ -1,6 +1,6 @@
 DELIMITER $$
 
-USE masran
+USE <%DATABASE%>
 
 DROP PROCEDURE IF EXISTS update_user_login_time $$
 

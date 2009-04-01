@@ -1,6 +1,6 @@
 DELIMITER $$
 
-USE masrans
+USE <%DATABASE%>
 
 DROP PROCEDURE IF EXISTS update_session $$
 

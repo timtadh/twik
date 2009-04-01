@@ -1,4 +1,4 @@
-import os, re, yaptu, cgi
+import os, re, yaptu, cgi, sys
 import warnings
 warnings.simplefilter('ignore', UserWarning)
 import formencode
@@ -7,7 +7,7 @@ warnings.simplefilter('default', UserWarning)
 import string
 import base64
 
-__rex = re.compile('\s*\<\%([^\<\%]+)\%\>')
+__rex = re.compile('\<\%([^\<\%]+)\%\>')
 __rbe = re.compile('\s*\<\+')
 __ren = re.compile('\s*\-\>')
 __rco = re.compile('\s*\|= ')
@@ -90,7 +90,7 @@ def print_error(error):
     error = Text().clean(error)
     print_template("templates/error_template.html",  locals())
 
-def print_template(template_path, namespace):
+def print_template(template_path, namespace, ouf=sys.stdout):
     f = open(template_path, 'r')
     s = f.readlines()
     f.close()
@@ -99,7 +99,7 @@ def print_template(template_path, namespace):
         import templater as __templater
         namespace.update({'templater':__templater})
     
-    cop = yaptu.copier(__rex, namespace, __rbe, __ren, __rco)
+    cop = yaptu.copier(__rex, namespace, __rbe, __ren, __rco, ouf=ouf)
     cop.copy(s)
 
 def print_table(table, table_info, target_page=None, table_name=None, paging=False, rows=15):

@@ -128,7 +128,7 @@ def print_table(table, table_info, target_page=None, table_name=None, paging=Fal
     elif rows_per_page: pages = len(table)/rows_per_page + 1
     else: pages = 1
     
-    print_template("templates/create_table.html", locals())
+    print_template("twik/create_table.html", locals())
 
 if __name__ == '__main__':
     print locals()

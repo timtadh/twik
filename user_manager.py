@@ -10,7 +10,7 @@ from Crypto.Hash import SHA256
 import Cookie
 import nDDB
 import db
-from crypt_framework import authenticator as auth, qcrypt
+import auth
 import templater
 import cookie_session
 from logger import Logger
@@ -75,7 +75,7 @@ def update_last_login_time(usr_id):
 def add_user(usr_id, name, email, screen_name, password):
     '''Creates a new row in the user table with the passed in parameters and the current time.'''
     
-    salt = qcrypt.normalize(os.urandom(32))
+    salt = auth.normalize(os.urandom(32))
     pass_hash = auth.saltedhash_hex(password, salt)
     
     con = db.connections.get_con()

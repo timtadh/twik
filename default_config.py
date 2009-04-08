@@ -1,4 +1,4 @@
-import sys
+import sys, os
 sys.stderr = sys.stdout
 import cgitb; cgitb.enable()
 import warnings
@@ -7,9 +7,14 @@ warnings.simplefilter('ignore', UserWarning)
 FIELDS = ['HOST', 'PORT', 'USER', 'PASSWD', 'DB']
 FIELDS.sort()
 
-f = open('db.conf', 'r')
-s = f.read()
-f.close
+try:
+    f = open('db.conf', 'r')
+    s = f.read()
+    f.close
+except:
+    print 'db.conf does not exist'
+    print os.getcwd()
+    sys.exit(1)
 
 def proc(s):
     s = s.lstrip().rstrip()

@@ -29,11 +29,14 @@ class Text(formencode.FancyValidator):
         rid of any non-printable ascii characters
     hide_all_tags() completely removes anything that looks like html from the text
     '''
-    __unpackargs__ = ('length',)
+    __unpackargs__ = ('length','sql')
     
     htmlre = re.compile('''</?\w+((\s+\w+(\s*=\s*(?:".*?"|'.*?'|[^'">\s]+))?)+\s*|\s*)/?>''')
     all_chars = "".join([chr(i) for i in range(256)])
     non_printable = all_chars.translate(all_chars, string.printable)
+    
+    def getsql(self):
+        if hasattr(self, 'sql'): return self.sql
     
     def allow_whitehtml(self, text):
         whitehtml = ['p', 'i', 'strong', 'b', 'u']
@@ -50,7 +53,9 @@ class Text(formencode.FancyValidator):
         msg = validators.MaxLength(self.length).to_python(msg)
         return base64.urlsafe_b64encode(msg)
     def _from_python(self, value, state):
-        return base64.urlsafe_b64decode(value)
+        s = base64.urlsafe_b64decode(value)
+        if self.getsql(): s = s.replace(';', '')
+        return s
     
     def clean(self, text, whitehtml=False):
         import db

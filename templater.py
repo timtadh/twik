@@ -107,7 +107,8 @@ def print_template(template_path, namespace, ouf=sys.stdout):
     cop = yaptu.copier(__rex, namespace, __rbe, __ren, __rco, ouf=ouf)
     cop.copy(s)
 
-def print_table(table, table_info, target_page=None, table_name=None, paging=False, rows=15):
+def print_table(table, table_info, target_page=None, table_name=None, paging=False, rows=15,
+                                   included_params=None):
     '''
     Prints a paged html table to the standard out.
         table = a list of lists, tuples, or dicts
@@ -128,10 +129,12 @@ def print_table(table, table_info, target_page=None, table_name=None, paging=Fal
     if paging: rows_per_page = rows
     else: rows_per_page = len(table)
     
-    
     if rows_per_page and (len(table)%rows_per_page) == 0: pages = len(table)/rows_per_page
     elif rows_per_page: pages = len(table)/rows_per_page + 1
     else: pages = 1
+    
+    if included_params and target_page: target_page += '?' + included_params + '&'
+    else: target_page += '?'
     
     print_template("twik/create_table.html", locals())
 

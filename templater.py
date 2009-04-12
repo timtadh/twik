@@ -138,6 +138,20 @@ def print_table(table, table_info, target_page=None, table_name=None, paging=Fal
     
     print_template("twik/create_table.html", locals())
 
+def print_csv(table, table_info):
+    '''
+    Prints a csv table to the standard out.
+        table = a list of lists, tuples, or dicts
+        table_info = a tuple or list of the this form
+            ((0, "column1"), (3, "column2"), (5, "column3"))
+            the numbers refer to the column in the table variable the strings are the name of the
+            columns
+    '''
+    header = ', '.join([col[1] for col in table_info if len(col) == 2])
+    rows = '\n'.join([', '.join([row[col[0]] for col in table_info if len(col) == 2]) for row in table if row])
+    print header
+    print rows
+
 if __name__ == '__main__':
     print locals()
     print globals()

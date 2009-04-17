@@ -23,6 +23,8 @@ Usage:
 
 import MySQLdb
 from MySQLdb.cursors import DictCursor
+from logger import Logger
+logger = Logger(__file__)
 
 class Connections(object):
     
@@ -79,6 +81,7 @@ def _results_gen(cur):
         yield r
 
 def callproc(name, *args):
+    logger.writeln('callproc', name, '%', args)
     connection = connections.get_con()
     cursor = DictCursor(connection)
     cursor.callproc(name, args)
@@ -90,6 +93,7 @@ def callproc(name, *args):
     else: return results
 
 def execute(query, *args):
+    logger.writeln('execute', query, '%', args)
     connection = connections.get_con()
     cursor = DictCursor(connection)
     cursor.execute(query, args)

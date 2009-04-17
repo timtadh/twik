@@ -42,7 +42,7 @@ def dependencies_preserved(F, p):
     for f in F:
         Z = closure_G(f[0], F, p)
         Y = set([i for i in f[1]])
-        #print Z, Y, Y <= Z
+        #print f[0], ''.join(Y), ''.join(Z), Y <= Z
         if not (Y <= Z): return False
     return True
 
@@ -76,6 +76,7 @@ def compute_keys(U, F):
     actual = list()
     for p in possible:
         p = p + known_primes
+        #print p, closure(p, F)
         if closure(p, F) == U:
             to_del = list()
             dont_add = False
@@ -140,7 +141,7 @@ def lossless_join(R, F, p):
     F = [(tuple([i for i in f[0]]), tuple([i for i in f[1]])) for f in list(F)]
     R_map = dict([(attr, i) for i, attr in enumerate(R)])
     
-    
+    #print R
     m = [[0 for n in xrange(len(R))] for k in p]
     
     for i, r in enumerate(p):
@@ -150,6 +151,7 @@ def lossless_join(R, F, p):
             if attr in r: m[i][j] = a(j)
             else: m[i][j] = b(i,j)
         #print
+    
     
     #print_matrix(m)
     m_l = None
@@ -161,15 +163,19 @@ def lossless_join(R, F, p):
             Y = [R_map[attr] for attr in f[1]]
             for i, r in enumerate(m):
                 for i2, r2, in enumerate(m):
+                    match = True
                     for attr in X:
-                        if r[attr] == r2[attr]:
-                            for y in Y:
-                                if type(r[y]) == a:
-                                    #print r[y], r2[y]
-                                    r2[y] = r[y]
-                                elif type(r2[y]) == a:
-                                    #print r[y], r2[y]
-                                    r[y] = r2[y]
+                        if r[attr] != r2[attr]: 
+                            match = False
+                            break
+                    if match:
+                        for y in Y:
+                            if type(r[y]) == a:
+                                #print r[y], r2[y]
+                                r2[y] = r[y]
+                            elif type(r2[y]) == a:
+                                #print r[y], r2[y]
+                                r[y] = r2[y]
         #print_matrix(m)
     for r in m:
         lossless = True
@@ -177,18 +183,101 @@ def lossless_join(R, F, p):
             if type(c) != a: lossless = False
         if lossless: return True
     return False
-    
-if __name__ == '__main__':
-    U = set([i for i in 'ABCDEG'])#H0123456789IJKLMNOPQ'])
-    F = set([('AB', 'C'), ('AC', 'B'), ('AD', 'E'), ('B', 'D'), ('BC', 'A'), ('E', 'G')])#,
-            # ('0123', 'J'), ('K', 'L'), ('H', '34567890')])
-    p = ('ABC', 'BD', 'ADE', 'EG')
-    
+
+def test(U, F, p):
     print 'U:', U
     print 'F:', F
     print 'p:', p
-    
     print 'keys: ', compute_keys(U, F)
-    
     print 'lossless join: ', lossless_join(U, F, p)
     print 'dependencies preserved: ', dependencies_preserved(F, p)
+    print
+
+if __name__ == '__main__':
+    
+    U = set('CTHRSG')
+    F = [('C', 'T'), ('HR', 'C'), ('HT', 'R'), ('CS', 'G'), ('HS', 'R')]
+    p = ('CT', 'CHR', 'THR', 'CSG')
+    test(U, F, p)
+    
+    #U = set('BOISQD')
+    #F = [('S', 'D'), ('I', 'B'), ('IS', 'Q'), ('B', 'O')]
+    #p = ('ISQ', 'SD', 'IO', 'IB')
+    #key = 'IS'
+    #test(U, F, p)
+    
+    #U = set('STVCPD')
+    #F = [('V', 'SCT'), ('SD', 'PV')]
+    #p = ('DVT', 'SDC', 'SDPV')
+    ##p = ('VC', 'VS', 'SDP', 'SDV', 'ST')
+    #test(U, F, p)
+    #U = set('BOISQD')
+    #F = [('S', 'D'), ('I', 'B'), ('IS', 'Q'), ('B', 'O')]
+    #p = ('ISQ', 'SD', 'IO', 'IB')
+    #test(U, F, p)
+    
+    
+    #U = set('ISQ')
+    #F = [('IS', 'Q')]
+    #test(U, F, p)
+    
+    #U = set('SD')
+    #F = [('S', 'D')]
+    #test(U, F, p)
+    
+    #U = set('IO')
+    #F = [('I', 'I')]
+    #test(U, F, p)
+    
+    
+    #U = set('IB')
+    #F = [('I', 'B')]
+    #test(U, F, p)
+    #U = set([i for i in 'ABCD'])
+    
+    #F = [('B', 'C'), ('D', 'A')]
+    #p = ('BC', 'AD')
+    #test(U, F, p)
+    
+    #F = [('AB', 'C'), ('C', 'A'), ('C', 'D')]
+    #p = ('ACD', 'BC')
+    #test(U, F, p)
+    
+    #F = [('A', 'BC'), ('C', 'AD')]
+    #p = ('ABC', 'AD')
+    #test(U, F, p)
+    
+    #F = [('A', 'B'), ('B', 'C'), ('C', 'D')]
+    #p = ('AB', 'ACD')
+    #test(U, F, p)
+    
+    
+    #F = [('A', 'B'), ('B', 'C'), ('C', 'D')]
+    #p = ('AB', 'AD', 'CD')
+    #test(U, F, p)
+    
+    #U = set([i for i in 'ABCDEG'])#H0123456789IJKLMNOPQ'])
+    #F = set([('AB', 'C'), ('AC', 'B'), ('AD', 'E'), ('B', 'D'), ('BC', 'A'), ('E', 'G')])#,
+            ## ('0123', 'J'), ('K', 'L'), ('H', '34567890')])
+    #p = ('ABC', 'BD', 'ADE', 'EG')
+    
+    #print 'U:', U
+    #print 'F:', F
+    #print 'p:', p
+    
+    #print 'keys: ', compute_keys(U, F)
+    
+    #print 'lossless join: ', lossless_join(U, F, p)
+    #print 'dependencies preserved: ', dependencies_preserved(F, p)
+    
+    #p = ('AB', 'BC', 'ABDE', 'EG')
+    #print
+    #print 'p:', p
+    #print 'lossless join: ', lossless_join(U, F, p)
+    #print 'dependencies preserved: ', dependencies_preserved(F, p)
+    
+    #p = ('ABC', 'ACDE', 'ADG')
+    #print
+    #print 'p:', p
+    #print 'lossless join: ', lossless_join(U, F, p)
+    #print 'dependencies preserved: ', dependencies_preserved(F, p)
